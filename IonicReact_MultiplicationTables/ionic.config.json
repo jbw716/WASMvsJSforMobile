@@ -1,0 +1,7 @@
+{
+  "name": "multiplication-tables",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react-vite"
+}

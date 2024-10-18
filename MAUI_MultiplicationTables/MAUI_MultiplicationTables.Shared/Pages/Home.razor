@@ -1,0 +1,44 @@
+﻿@page "/"
+@code {
+    public readonly record struct Calculation(int Number, int Multiplier, int Result);
+
+    private string Number { get; set; }
+    private int Time { get; set; }
+
+    private void HandleInput(ChangeEventArgs e)
+    {
+        Number = e.Value.ToString();
+    }
+
+    private void Calculate()
+    {
+        var timer = System.Diagnostics.Stopwatch.StartNew();
+        var number = int.Parse(Number);
+        var calculations = new Calculation[1_000_000];
+        for (int i = 0; i < 1_000_000; i++)
+        {
+            calculations[i] = new Calculation
+                {
+                    Number = number,
+                    Multiplier = i,
+                    Result = number * i
+                };
+        }
+        timer.Stop();
+        Time = (int)timer.ElapsedMilliseconds;
+    }
+}
+
+<PageTitle>Home</PageTitle>
+<ion-list>
+    <ion-item>
+        <ion-input @oninput=HandleInput type="number" label="Enter a number here" label-placement="floating" placeholder="Enter a number"></ion-input>
+        <ion-button @onclick=Calculate>Calculate!</ion-button>
+    </ion-item>
+    @if (Time > 0)
+    {
+        <ion-item>
+            <ion-label>Calculation took @Time ms</ion-label>
+        </ion-item>
+    }
+</ion-list>
