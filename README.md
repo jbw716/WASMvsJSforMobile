@@ -1,4 +1,4 @@
-# Opening Points:
+# Opening Points
 -   Client-side rendering is almost always preferred, because these days, we can reasonably assume that network connectivity is a larger bottleneck than device processing power.
 -   **This can be a double-edged sword.** Client-side ***rendering*** does not mean client-side ***processing***! Data manipulation and processing should be handled on the server-side unless there is a very specific need for client-side or offline handling of data.
 -   There are some things that server-side code handles significantly more efficiently.
@@ -7,7 +7,7 @@
 -   This is why handling something needing true concurrency would be much faster and easier to handle server-side. In our case, .NET has the Task Parallel Library already built for us that we can tap into.
 
 
-# Segue To WASM:
+# Segue To WASM
 -   This is where WebAssembly, or WASM, comes into play.
 -   WASM allows for running near-native code execution speed from the context of a web browser. What this means for us is that we can execute .NET code natively in the web browser!
 -   This can allow for significantly faster and more efficient data processing and handling **ON THE CLIENT!**
