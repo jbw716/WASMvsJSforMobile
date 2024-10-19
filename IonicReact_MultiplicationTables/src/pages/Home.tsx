@@ -3,61 +3,47 @@ import './Home.css';
 import { useState } from 'react';
 
 const Home: React.FC = () => {
-  class Calculation {
-    public number!: number;
-    public multiplier!: number;
-    public result!: number;
-  }
-
   const number = 5;
-  let numbers: number[] | null = null;
+  const size = 1_000_000;
   const [time, setTime] = useState<number>(0);
 
-  const calculate = () => {
+  const timeFunction = (fn: Function) => {
     const start = Date.now();
-    const calculations: Calculation[] = [];
-    for (let i = 1; i <= 1_000_000; i++) {
-      calculations.push({
-        number,
-        multiplier: i,
-        result: number * i
-      });
-    }
+    fn();
     setTime(Date.now() - start);
+    return time;
+  }
+
+  const calculateMultiplicationTable = () => {
+    timeFunction(() => {
+      const calculations: number[] = [];
+      for (let i = 0; i < size; i++) {
+        calculations[i] = number * (i + 1);
+      }
+    });
   };
 
   const generateAndSortNumbers = () => {
-    const start = Date.now();
-    generateArrayOfRandomNumbers();
-    sortArrayOfRandomNumbers();
-    console.log(numbers);
-    setTime(Date.now() - start);
-  }
-
-  const generateArrayOfRandomNumbers = () => {
-    const array: number[] = [];
-    for (let i = 0; i < 1_000_000; i++) {
-      array.push(Math.floor(Math.random() * 100));
-    }
-    numbers = array;
-  }
-
-  const sortArrayOfRandomNumbers = () => {
-    if (!numbers) return;
-    numbers.sort();
+    timeFunction(() => {
+      const numbers: number[] = new Array(size);
+      for (let i = 0; i < size; i++) {
+        numbers[i] = Math.floor(Math.random() * 100);
+      }
+      numbers.sort();
+    });
   }
 
   const generatePrimeNumbers = () => {
-    const start = Date.now();
-    const primeNumbers: number[] = [];
-    let number = 2;
-    while (primeNumbers.length < 1_000_000) {
-      if (isPrime(number)) {
-        primeNumbers.push(number);
+    timeFunction(() => {
+      const primeNumbers: number[] = [];
+      let n = 2;
+      while (primeNumbers.length < size) {
+        if (isPrime(n)) {
+          primeNumbers.push(n);
+        }
+        n++;
       }
-      number++;
-    }
-    setTime(Date.now() - start);
+    });
   }
 
   const isPrime = (n: number) => {
@@ -71,7 +57,7 @@ const Home: React.FC = () => {
   return (
     <IonList>
       <IonItem>
-        <IonButton onClick={calculate}>Generate Multiplication Tables</IonButton>
+        <IonButton onClick={calculateMultiplicationTable}>Generate Multiplication Tables</IonButton>
       </IonItem>
       <IonItem>
         <IonButton onClick={generateAndSortNumbers}>Generate and sort numbers</IonButton>
@@ -79,7 +65,7 @@ const Home: React.FC = () => {
       <IonItem>
         <IonButton onClick={generatePrimeNumbers}>Generate prime numbers</IonButton>
       </IonItem>
-      {!!time &&
+      {time > 0 &&
         <IonItem>
           <p>Did that in {time} ms</p>
         </IonItem>

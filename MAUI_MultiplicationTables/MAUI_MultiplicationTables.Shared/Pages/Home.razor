@@ -1,78 +1,61 @@
 ﻿@page "/"
 @code {
-    public class Calculation
-    {
-        public int Number;
-        public int Multiplier;
-        public int Result;
-    }
-    private int Time { get; set; }
-    private List<int> Numbers { get; set; }
-    private int Number = 5;
+    private int number = 5;
+    private int size = 1_000_000;
+    private int time = 0;
 
-    private void Calculate()
+    private int TimeFunction(Action action)
     {
         var timer = System.Diagnostics.Stopwatch.StartNew();
-        var calculations = new List<Calculation>();
-        for (int i = 0; i < 1_000_000; i++)
-        {
-            calculations.Add(new Calculation
-                {
-                    Number = Number,
-                    Multiplier = i,
-                    Result = Number * i
-                });
-        }
+        action();
         timer.Stop();
-        Time = (int)timer.ElapsedMilliseconds;
+        time = (int)timer.ElapsedMilliseconds;
+        return time;
+    }
+
+    private void CalculateMultiplicationTable()
+    {
+        TimeFunction(() =>
+        {
+            var calculations = new int[this.size];
+            for (var i = 0; i < this.size; i++)
+            {
+                calculations[i] = this.number * (i + 1);
+            }
+        });
     }
 
     public void GenerateAndSortNumbers()
     {
-        var timer = System.Diagnostics.Stopwatch.StartNew();
-        GenerateListOfRandomNumbers();
-        SortListOfNumbers();
-        timer.Stop();
-        Time = (int)timer.ElapsedMilliseconds;
-    }
-
-    private void GenerateListOfRandomNumbers()
-    {
-        var random = new Random();
-        var numbers = new List<int>();
-        for (int i = 0; i < 1_000_000; i++)
+        TimeFunction(() =>
         {
-            numbers.Add(random.Next(1, 100));
-        }
-        Numbers = numbers;
-    }
-
-    private void SortListOfNumbers()
-    {
-        Numbers.Sort();
+            var numbers = new int[size];
+            for (int i = 0; i < this.size; i++)
+            {
+                numbers[i] = Random.Shared.Next(1, 100);
+            }
+            numbers.ToList().Sort();
+        });
     }
 
     private void GeneratePrimeNumbers()
     {
-        var timer = System.Diagnostics.Stopwatch.StartNew();
-        var primeNumbers = new List<int>();
-        for (int i = 2; i < 1_000_000; i++)
+        TimeFunction(() =>
         {
-            if (IsPrime(i))
+            var primeNumbers = new List<int>();
+            for (int i = 2; i < this.size; i++)
             {
-                primeNumbers.Add(i);
+                if (IsPrime(i))
+                {
+                    primeNumbers.Add(i);
+                }
             }
-        }
-        timer.Stop();
-        Time = (int)timer.ElapsedMilliseconds;
+        });
     }
 
     private bool IsPrime(int number)
     {
-        if (number < 2)
-        {
-            return false;
-        }
+        if (number < 2) return false;
         for (int i = 2; i <= Math.Sqrt(number); i++)
         {
             if (number % i == 0)
@@ -87,7 +70,7 @@
 <PageTitle>Home</PageTitle>
 <ion-list>
     <ion-item>
-        <ion-button @onclick=Calculate>Generate Multiplication Tables</ion-button>
+        <ion-button @onclick=CalculateMultiplicationTable>Generate Multiplication Tables</ion-button>
     </ion-item>
     <ion-item>
         <ion-button @onclick=GenerateAndSortNumbers>Generate and Sort Numbers</ion-button>
@@ -95,10 +78,10 @@
     <ion-item>
         <ion-button @onclick=GeneratePrimeNumbers>Generate Prime Numbers</ion-button>
     </ion-item>
-    @if (Time > 0)
+    @if (time > 0)
     {
         <ion-item>
-            <ion-label>Did that in @Time ms</ion-label>
+            <ion-label>Did that in @time ms</ion-label>
         </ion-item>
     }
 </ion-list>
