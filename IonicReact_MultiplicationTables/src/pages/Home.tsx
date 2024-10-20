@@ -26,7 +26,7 @@ const Home: React.FC = () => {
 
   const generateAndSortNumbers = () => {
     timeFunction(() => {
-      const numbers: number[] = new Array(size);
+      const numbers: number[] = [];
       for (let i = 0; i < size; i++) {
         numbers[i] = Math.floor(Math.random() * 100);
       }
@@ -37,8 +37,8 @@ const Home: React.FC = () => {
   const generatePrimeNumbers = () => {
     timeFunction(() => {
       const limit = estimateLimit(size);
-      const sieve = new Array<boolean>(limit);
-      const primes = new Array<number>();
+      const sieve = [];
+      const primes = [];
       for (let i = 2; i < limit; i++) {
         if (!sieve[i]) {
           primes.push(i);
