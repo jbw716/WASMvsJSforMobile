@@ -128,16 +128,10 @@
             <ion-label>Did that in @time ms</ion-label>
         </ion-item>
     }
-    @if (numbersToRender.Count > 0)
+    @foreach (var number in numbersToRender)
     {
         <ion-item>
-            <ion-label>Numbers</ion-label>
+            <ion-label>@number</ion-label>
         </ion-item>
-        @foreach (var number in numbersToRender)
-        {
-            <ion-item>
-                <ion-label>@number</ion-label>
-            </ion-item>
-        }
     }
 </ion-list>

@@ -106,17 +106,12 @@ const Home: React.FC = () => {
       </IonItem>
       {time >= 0 &&
         <IonItem>
-          <p>Did that in {time} ms</p>
-        </IonItem>
-      }
-      {numbersToRender.length > 0 &&
-        <IonItem>
-          <IonLabel>Numbers</IonLabel>
+          <IonLabel>Did that in {time} ms</IonLabel>
         </IonItem>
       }
       {numbersToRender.map((number, index) => (
         <IonItem key={index}>
-          <p>{number}</p>
+          <IonLabel>{number}</IonLabel>
         </IonItem>
       ))}
     </IonList>
