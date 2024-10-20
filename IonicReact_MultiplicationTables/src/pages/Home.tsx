@@ -36,22 +36,22 @@ const Home: React.FC = () => {
   const generatePrimeNumbers = () => {
     timeFunction(() => {
       const primeNumbers: number[] = [];
-      let n = 2;
-      while (primeNumbers.length < size) {
+      for (let n = 2; primeNumbers.length < size; n++) {
         if (isPrime(n)) {
           primeNumbers.push(n);
         }
-        n++;
       }
     });
   }
 
   const isPrime = (n: number) => {
-    if (n < 2) return false;
-    for (let i = 2; i <= Math.sqrt(n); i++) {
+    var boundary = Math.floor(Math.sqrt(n));
+    if (n === 1) return false;
+    if (n === 2) return true;
+    for (let i = 2; i <= boundary; i++) {
       if (n % i === 0) return false;
     }
-    return true
+    return true;
   }
 
   return (
