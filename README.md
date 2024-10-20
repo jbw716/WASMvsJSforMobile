@@ -6,7 +6,7 @@
 -   For example, I won’t tell you that concurrency with multithreading isn’t possible on the client-side, however, it does require lower level, OS-specific code to do so.
 -   This is why handling something needing true concurrency would be much faster and easier to handle server-side. In our case, .NET has the Task Parallel Library already built for us that we can tap into.
 
-# Segue To WASM
+# Enter: WASM
 -   This is where WebAssembly, or WASM, comes into play.
 -   WASM allows for running near-native code execution speed from the context of a web browser. What this means for us is that we can execute .NET code natively in the web browser!
 -   This can allow for significantly faster and more efficient data processing and handling **ON THE CLIENT!**
