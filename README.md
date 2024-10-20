@@ -9,13 +9,12 @@
 # Segue To WASM
 -   This is where WebAssembly, or WASM, comes into play.
 -   WASM allows for running near-native code execution speed from the context of a web browser. What this means for us is that we can execute .NET code natively in the web browser!
--   ~~This can allow for significantly faster and more efficient data processing and handling **ON THE CLIENT!**~~
+-   This can allow for significantly faster and more efficient data processing and handling **ON THE CLIENT!**
 -   **WITH GREAT POWER COMES GREAT RESPONSIBILITY:** Just because you can, doesn’t mean you should.
 -   There are still things that will be better to handle server-side.
--   In the end, the executed code is still shipped to the client, so sensitive code should absolutely be kept server-side
--   In my testing, this section took a significantly different turn than I expected. Almost entirely opposite!
--   ~~Think of this advantage as just a speed increase to the things that you would otherwise already be handling on the client side.~~ I would not recommend using this tool to move server-side code to the client unless it provides a tangible benefit to the end user like decreased load times or more offline functionality.
--   ~~For example, if I have an application for doing intensive number crunching based on user inputs that should dynamically update the results as a user changes their inputs, the raw processing speed of WASM will be much quicker than in something like JavaScript, and we won’t have to make an API request and wait for a response over the network with every change that the user makes.~~
+-   In the end, the executed code is still shipped to the client, so sensitive code should absolutely be kept server-side.
+-   Think of this advantage as just a speed increase to the things that you would otherwise already be handling on the client side. I would not recommend using this tool to move server-side code to the client unless it provides a tangible benefit to the end user like decreased load times or more offline functionality.
+-   For example, if I have an application for doing intensive number crunching based on user inputs that should dynamically update the results as a user changes their inputs, the raw processing speed of WASM will be much quicker than in something like JavaScript, and we won’t have to make an API request and wait for a response over the network with every change that the user makes.
 -   WASM is also used to increase the speed of other things like graphics rendering, or can allow you to run some code that would otherwise be required to run server-side, but save a network request and latency.
 
 **With all of that said, let’s move into the demo!**
