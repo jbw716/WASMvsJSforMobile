@@ -4,7 +4,7 @@ import { useState } from 'react';
 
 const Home: React.FC = () => {
   const number = 5;
-  const size = 1_000_000;
+  const size = 5_000_000;
   const [time, setTime] = useState<number>(-1);
   const [numbersToRender, setNumbersToRender] = useState<number[]>([]);
 
