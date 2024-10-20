@@ -2,7 +2,8 @@
 @code {
     private int number = 5;
     private int size = 1_000_000;
-    private int time = 0;
+    private int time = -1;
+    private List<int> numbersToRender = [];
 
     private int TimeFunction(Action action)
     {
@@ -93,23 +94,50 @@
         }
         return true;
     } *@
+    public void RenderNumbers()
+    {
+        TimeFunction(() =>
+        {
+            var numbers = new List<int>();
+            for (int i = 0; i < 10_000; i++)
+            {
+                numbers.Add(Random.Shared.Next(1, 100));
+            }
+            numbersToRender = numbers;
+        });
     }
+}
 
-    <PageTitle>Home</PageTitle>
-    <ion-list>
-        <ion-item>
-            <ion-button @onclick=CalculateMultiplicationTable>Generate Multiplication Tables</ion-button>
-        </ion-item>
-        <ion-item>
-            <ion-button @onclick=GenerateAndSortNumbers>Generate and Sort Numbers</ion-button>
-        </ion-item>
-        <ion-item>
-            <ion-button @onclick=GeneratePrimeNumbers>Generate Prime Numbers</ion-button>
-        </ion-item>
-        @if (time > 0)
-{
+<PageTitle>Home</PageTitle>
+<ion-list>
+    <ion-item>
+        <ion-button @onclick=CalculateMultiplicationTable>Generate Multiplication Tables</ion-button>
+    </ion-item>
+    <ion-item>
+        <ion-button @onclick=GenerateAndSortNumbers>Generate and Sort Numbers</ion-button>
+    </ion-item>
+    <ion-item>
+        <ion-button @onclick=GeneratePrimeNumbers>Generate Prime Numbers</ion-button>
+    </ion-item>
+    <ion-item>
+        <ion-button @onclick=RenderNumbers>Render 10,000 Numbers</ion-button>
+    </ion-item>
+    @if (time >= 0)
+    {
         <ion-item>
             <ion-label>Did that in @time ms</ion-label>
         </ion-item>
-}
-    </ion-list>
+    }
+    @if (numbersToRender.Count > 0)
+    {
+        <ion-item>
+            <ion-label>Numbers</ion-label>
+        </ion-item>
+        @foreach (var number in numbersToRender)
+        {
+            <ion-item>
+                <ion-label>@number</ion-label>
+            </ion-item>
+        }
+    }
+</ion-list>

@@ -1,11 +1,12 @@
-import { IonButton, IonItem, IonList } from '@ionic/react';
+import { IonButton, IonItem, IonLabel, IonList } from '@ionic/react';
 import './Home.css';
 import { useState } from 'react';
 
 const Home: React.FC = () => {
   const number = 5;
   const size = 1_000_000;
-  const [time, setTime] = useState<number>(0);
+  const [time, setTime] = useState<number>(-1);
+  const [numbersToRender, setNumbersToRender] = useState<number[]>([]);
 
   const timeFunction = (fn: Function) => {
     const start = Date.now();
@@ -79,22 +80,45 @@ const Home: React.FC = () => {
   //   return true;
   // }
 
+  const renderNumbers = () => {
+    timeFunction(() => {
+      const numbers: number[] = [];
+      for (let i = 0; i < 10_000; i++) {
+        numbers.push(Math.floor(Math.random() * 100));
+      }
+      setNumbersToRender(numbers);
+    });
+  }
+
   return (
     <IonList>
       <IonItem>
         <IonButton onClick={calculateMultiplicationTable}>Generate Multiplication Tables</IonButton>
       </IonItem>
       <IonItem>
-        <IonButton onClick={generateAndSortNumbers}>Generate and sort numbers</IonButton>
+        <IonButton onClick={generateAndSortNumbers}>Generate and Sort Numbers</IonButton>
       </IonItem>
       <IonItem>
-        <IonButton onClick={generatePrimeNumbers}>Generate prime numbers</IonButton>
+        <IonButton onClick={generatePrimeNumbers}>Generate Prime Numbers</IonButton>
       </IonItem>
-      {time > 0 &&
+      <IonItem>
+        <IonButton onClick={renderNumbers}>Render 10,000 Numbers</IonButton>
+      </IonItem>
+      {time >= 0 &&
         <IonItem>
           <p>Did that in {time} ms</p>
         </IonItem>
       }
+      {numbersToRender.length > 0 &&
+        <IonItem>
+          <IonLabel>Numbers</IonLabel>
+        </IonItem>
+      }
+      {numbersToRender.map((number, index) => (
+        <IonItem key={index}>
+          <p>{number}</p>
+        </IonItem>
+      ))}
     </IonList>
   );
 };
