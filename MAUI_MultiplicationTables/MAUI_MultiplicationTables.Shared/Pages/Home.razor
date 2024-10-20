@@ -1,93 +1,117 @@
 ﻿@page "/"
 @code {
-    public class Calculation
-    {
-        public int Number;
-        public int Multiplier;
-        public int Result;
-    }
-    private int Time { get; set; }
-    private List<int> Numbers { get; set; }
-    private int Number = 5;
+    private int number = 5;
+    private int size = 5_000_000;
+    private int time = -1;
+    private List<int> numbersToRender = [];
 
-    private void Calculate()
+    private int TimeFunction(Action action)
     {
         var timer = System.Diagnostics.Stopwatch.StartNew();
-        var calculations = new List<Calculation>();
-        for (int i = 0; i < 1_000_000; i++)
-        {
-            calculations.Add(new Calculation
-                {
-                    Number = Number,
-                    Multiplier = i,
-                    Result = Number * i
-                });
-        }
+        action();
         timer.Stop();
-        Time = (int)timer.ElapsedMilliseconds;
+        time = (int)timer.ElapsedMilliseconds;
+        return time;
+    }
+
+    private void CalculateMultiplicationTable()
+    {
+        TimeFunction(() =>
+        {
+            var calculations = new int[this.size];
+            for (var i = 0; i < this.size; i++)
+            {
+                calculations[i] = this.number * (i + 1);
+            }
+        });
     }
 
     public void GenerateAndSortNumbers()
     {
-        var timer = System.Diagnostics.Stopwatch.StartNew();
-        GenerateListOfRandomNumbers();
-        SortListOfNumbers();
-        timer.Stop();
-        Time = (int)timer.ElapsedMilliseconds;
-    }
-
-    private void GenerateListOfRandomNumbers()
-    {
-        var random = new Random();
-        var numbers = new List<int>();
-        for (int i = 0; i < 1_000_000; i++)
+        TimeFunction(() =>
         {
-            numbers.Add(random.Next(1, 100));
-        }
-        Numbers = numbers;
-    }
-
-    private void SortListOfNumbers()
-    {
-        Numbers.Sort();
-    }
-
-    private void GeneratePrimeNumbers()
-    {
-        var timer = System.Diagnostics.Stopwatch.StartNew();
-        var primeNumbers = new List<int>();
-        for (int i = 2; i < 1_000_000; i++)
-        {
-            if (IsPrime(i))
+            var numbers = new int[size];
+            for (int i = 0; i < this.size; i++)
             {
-                primeNumbers.Add(i);
+                numbers[i] = Random.Shared.Next(1, 100);
             }
-        }
-        timer.Stop();
-        Time = (int)timer.ElapsedMilliseconds;
+            numbers.ToList().Sort();
+        });
     }
 
+    public void GeneratePrimeNumbers()
+    {
+        TimeFunction(() =>
+        {
+            int limit = EstimateLimit(this.size);
+            bool[] sieve = new bool[limit];
+            List<int> primes = new List<int>();
+            for (int i = 2; i < limit; i++)
+            {
+                if (!sieve[i])
+                {
+                    primes.Add(i);
+                    if (primes.Count == this.size) break;
+                    for (int j = i * 2; j < limit; j += i)
+                    {
+                        sieve[j] = true;
+                    }
+                }
+            }
+        });
+    }
+
+    private static int EstimateLimit(int x)
+    {
+        // Basic estimation for the nth prime number
+        if (x < 6) return 13; // Small numbers special case
+        double n = (double)x;
+        return (int)(n * (Math.Log(n) + Math.Log(Math.Log(n))));
+    }
+
+    @* private void GeneratePrimeNumbers()
+    {
+        TimeFunction(() =>
+        {
+            var primeNumbers = new List<int>();
+            for (int i = 2; primeNumbers.Count < this.size; i++)
+            {
+                if (IsPrime(i))
+                {
+                    primeNumbers.Add(i);
+                }
+            }
+        });
+    }
     private bool IsPrime(int number)
     {
-        if (number < 2)
+        var boundary = Math.Floor(Math.Sqrt(number));
+        if (number == 1) return false;
+        if (number == 2) return true;
+        for (int i = 2; i <= boundary; ++i)
         {
-            return false;
-        }
-        for (int i = 2; i <= Math.Sqrt(number); i++)
-        {
-            if (number % i == 0)
-            {
-                return false;
-            }
+            if (number % i == 0) return false;
         }
         return true;
+    } *@
+    public void RenderNumbers()
+    {
+        TimeFunction(() =>
+        {
+            var numbers = new List<int>();
+            for (int i = 0; i < 10_000; i++)
+            {
+                numbers.Add(Random.Shared.Next(1, 100));
+            }
+            numbersToRender = numbers;
+        });
     }
 }
 
 <PageTitle>Home</PageTitle>
 <ion-list>
     <ion-item>
-        <ion-button @onclick=Calculate>Generate Multiplication Tables</ion-button>
+        <ion-button @onclick=CalculateMultiplicationTable>Generate Multiplication Tables</ion-button>
     </ion-item>
     <ion-item>
         <ion-button @onclick=GenerateAndSortNumbers>Generate and Sort Numbers</ion-button>
@@ -95,10 +119,25 @@
     <ion-item>
         <ion-button @onclick=GeneratePrimeNumbers>Generate Prime Numbers</ion-button>
     </ion-item>
-    @if (Time > 0)
+    <ion-item>
+        <ion-button @onclick=RenderNumbers>Render 10,000 Numbers</ion-button>
+    </ion-item>
+    @if (time >= 0)
     {
         <ion-item>
-            <ion-label>Did that in @Time ms</ion-label>
+            <ion-label>Did that in @time ms</ion-label>
         </ion-item>
+    }
+    @if (numbersToRender.Count > 0)
+    {
+        <ion-item>
+            <ion-label>Numbers</ion-label>
+        </ion-item>
+        @foreach (var number in numbersToRender)
+        {
+            <ion-item>
+                <ion-label>@number</ion-label>
+            </ion-item>
+        }
     }
 </ion-list>

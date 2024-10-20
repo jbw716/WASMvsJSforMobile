@@ -1,89 +1,124 @@
-import { IonButton, IonItem, IonList } from '@ionic/react';
+import { IonButton, IonItem, IonLabel, IonList } from '@ionic/react';
 import './Home.css';
 import { useState } from 'react';
 
 const Home: React.FC = () => {
-  class Calculation {
-    public number!: number;
-    public multiplier!: number;
-    public result!: number;
+  const number = 5;
+  const size = 5_000_000;
+  const [time, setTime] = useState<number>(-1);
+  const [numbersToRender, setNumbersToRender] = useState<number[]>([]);
+
+  const timeFunction = (fn: Function) => {
+    const start = Date.now();
+    fn();
+    setTime(Date.now() - start);
+    return time;
   }
 
-  const number = 5;
-  let numbers: number[] | null = null;
-  const [time, setTime] = useState<number>(0);
-
-  const calculate = () => {
-    const start = Date.now();
-    const calculations: Calculation[] = [];
-    for (let i = 1; i <= 1_000_000; i++) {
-      calculations.push({
-        number,
-        multiplier: i,
-        result: number * i
-      });
-    }
-    setTime(Date.now() - start);
+  const calculateMultiplicationTable = () => {
+    timeFunction(() => {
+      const calculations: number[] = [];
+      for (let i = 0; i < size; i++) {
+        calculations[i] = number * (i + 1);
+      }
+    });
   };
 
   const generateAndSortNumbers = () => {
-    const start = Date.now();
-    generateArrayOfRandomNumbers();
-    sortArrayOfRandomNumbers();
-    console.log(numbers);
-    setTime(Date.now() - start);
-  }
-
-  const generateArrayOfRandomNumbers = () => {
-    const array: number[] = [];
-    for (let i = 0; i < 1_000_000; i++) {
-      array.push(Math.floor(Math.random() * 100));
-    }
-    numbers = array;
-  }
-
-  const sortArrayOfRandomNumbers = () => {
-    if (!numbers) return;
-    numbers.sort();
+    timeFunction(() => {
+      const numbers: number[] = [];
+      for (let i = 0; i < size; i++) {
+        numbers[i] = Math.floor(Math.random() * 100);
+      }
+      numbers.sort();
+    });
   }
 
   const generatePrimeNumbers = () => {
-    const start = Date.now();
-    const primeNumbers: number[] = [];
-    let number = 2;
-    while (primeNumbers.length < 1_000_000) {
-      if (isPrime(number)) {
-        primeNumbers.push(number);
+    timeFunction(() => {
+      const limit = estimateLimit(size);
+      const sieve = [];
+      const primes = [];
+      for (let i = 2; i < limit; i++) {
+        if (!sieve[i]) {
+          primes.push(i);
+          if (primes.length == size) break;
+          for (let j = i * 2; j < limit; j += i) {
+            sieve[j] = true;
+          }
+        }
       }
-      number++;
-    }
-    setTime(Date.now() - start);
+    });
   }
 
-  const isPrime = (n: number) => {
-    if (n < 2) return false;
-    for (let i = 2; i <= Math.sqrt(n); i++) {
-      if (n % i === 0) return false;
-    }
-    return true
+  const estimateLimit = (x: number) => {
+    // Basic estimation for the nth prime number
+    if (x < 6) return 13; // Small numbers special case
+    const n = x;
+    return Math.trunc((n * (Math.log(n) + Math.log(Math.log(n)))));
+  }
+
+  // const generatePrimeNumbers = () => {
+  //   timeFunction(() => {
+  //     const primeNumbers: number[] = [];
+  //     for (let n = 2; primeNumbers.length < size; n++) {
+  //       if (isPrime(n)) {
+  //         primeNumbers.push(n);
+  //       }
+  //     }
+  //     console.log(primeNumbers[primeNumbers.length - 1]);
+  //   });
+  // }
+
+  // const isPrime = (n: number) => {
+  //   var boundary = Math.floor(Math.sqrt(n));
+  //   if (n === 1) return false;
+  //   if (n === 2) return true;
+  //   for (let i = 2; i <= boundary; ++i) {
+  //     if (n % i === 0) return false;
+  //   }
+  //   return true;
+  // }
+
+  const renderNumbers = () => {
+    timeFunction(() => {
+      const numbers: number[] = [];
+      for (let i = 0; i < 10_000; i++) {
+        numbers.push(Math.floor(Math.random() * 100));
+      }
+      setNumbersToRender(numbers);
+    });
   }
 
   return (
     <IonList>
       <IonItem>
-        <IonButton onClick={calculate}>Generate Multiplication Tables</IonButton>
+        <IonButton onClick={calculateMultiplicationTable}>Generate Multiplication Tables</IonButton>
       </IonItem>
       <IonItem>
-        <IonButton onClick={generateAndSortNumbers}>Generate and sort numbers</IonButton>
+        <IonButton onClick={generateAndSortNumbers}>Generate and Sort Numbers</IonButton>
       </IonItem>
       <IonItem>
-        <IonButton onClick={generatePrimeNumbers}>Generate prime numbers</IonButton>
+        <IonButton onClick={generatePrimeNumbers}>Generate Prime Numbers</IonButton>
       </IonItem>
-      {!!time &&
+      <IonItem>
+        <IonButton onClick={renderNumbers}>Render 10,000 Numbers</IonButton>
+      </IonItem>
+      {time >= 0 &&
         <IonItem>
           <p>Did that in {time} ms</p>
         </IonItem>
       }
+      {numbersToRender.length > 0 &&
+        <IonItem>
+          <IonLabel>Numbers</IonLabel>
+        </IonItem>
+      }
+      {numbersToRender.map((number, index) => (
+        <IonItem key={index}>
+          <p>{number}</p>
+        </IonItem>
+      ))}
     </IonList>
   );
 };
