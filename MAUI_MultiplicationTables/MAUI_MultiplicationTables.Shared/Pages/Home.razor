@@ -38,7 +38,37 @@
         });
     }
 
-    private void GeneratePrimeNumbers()
+    public void GeneratePrimeNumbers()
+    {
+        TimeFunction(() =>
+        {
+            int limit = EstimateLimit(this.size);
+            bool[] sieve = new bool[limit];
+            List<int> primes = new List<int>();
+            for (int i = 2; i < limit; i++)
+            {
+                if (!sieve[i])
+                {
+                    primes.Add(i);
+                    if (primes.Count == this.size) break;
+                    for (int j = i * 2; j < limit; j += i)
+                    {
+                        sieve[j] = true;
+                    }
+                }
+            }
+        });
+    }
+
+    private static int EstimateLimit(int x)
+    {
+        // Basic estimation for the nth prime number
+        if (x < 6) return 13; // Small numbers special case
+        double n = (double)x;
+        return (int)(n * (Math.Log(n) + Math.Log(Math.Log(n))));
+    }
+
+    @* private void GeneratePrimeNumbers()
     {
         TimeFunction(() =>
         {
@@ -62,24 +92,24 @@
             if (number % i == 0) return false;
         }
         return true;
+    } *@
     }
-}
 
-<PageTitle>Home</PageTitle>
-<ion-list>
-    <ion-item>
-        <ion-button @onclick=CalculateMultiplicationTable>Generate Multiplication Tables</ion-button>
-    </ion-item>
-    <ion-item>
-        <ion-button @onclick=GenerateAndSortNumbers>Generate and Sort Numbers</ion-button>
-    </ion-item>
-    <ion-item>
-        <ion-button @onclick=GeneratePrimeNumbers>Generate Prime Numbers</ion-button>
-    </ion-item>
-    @if (time > 0)
-    {
+    <PageTitle>Home</PageTitle>
+    <ion-list>
+        <ion-item>
+            <ion-button @onclick=CalculateMultiplicationTable>Generate Multiplication Tables</ion-button>
+        </ion-item>
+        <ion-item>
+            <ion-button @onclick=GenerateAndSortNumbers>Generate and Sort Numbers</ion-button>
+        </ion-item>
+        <ion-item>
+            <ion-button @onclick=GeneratePrimeNumbers>Generate Prime Numbers</ion-button>
+        </ion-item>
+        @if (time > 0)
+{
         <ion-item>
             <ion-label>Did that in @time ms</ion-label>
         </ion-item>
-    }
-</ion-list>
+}
+    </ion-list>

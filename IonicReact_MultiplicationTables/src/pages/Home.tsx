@@ -35,24 +35,49 @@ const Home: React.FC = () => {
 
   const generatePrimeNumbers = () => {
     timeFunction(() => {
-      const primeNumbers: number[] = [];
-      for (let n = 2; primeNumbers.length < size; n++) {
-        if (isPrime(n)) {
-          primeNumbers.push(n);
+      const limit = estimateLimit(size);
+      const sieve = new Array<boolean>(limit);
+      const primes = new Array<number>();
+      for (let i = 2; i < limit; i++) {
+        if (!sieve[i]) {
+          primes.push(i);
+          if (primes.length == size) break;
+          for (let j = i * 2; j < limit; j += i) {
+            sieve[j] = true;
+          }
         }
       }
     });
   }
 
-  const isPrime = (n: number) => {
-    var boundary = Math.floor(Math.sqrt(n));
-    if (n === 1) return false;
-    if (n === 2) return true;
-    for (let i = 2; i <= boundary; i++) {
-      if (n % i === 0) return false;
-    }
-    return true;
+  const estimateLimit = (x: number) => {
+    // Basic estimation for the nth prime number
+    if (x < 6) return 13; // Small numbers special case
+    const n = x;
+    return Math.trunc((n * (Math.log(n) + Math.log(Math.log(n)))));
   }
+
+  // const generatePrimeNumbers = () => {
+  //   timeFunction(() => {
+  //     const primeNumbers: number[] = [];
+  //     for (let n = 2; primeNumbers.length < size; n++) {
+  //       if (isPrime(n)) {
+  //         primeNumbers.push(n);
+  //       }
+  //     }
+  //     console.log(primeNumbers[primeNumbers.length - 1]);
+  //   });
+  // }
+
+  // const isPrime = (n: number) => {
+  //   var boundary = Math.floor(Math.sqrt(n));
+  //   if (n === 1) return false;
+  //   if (n === 2) return true;
+  //   for (let i = 2; i <= boundary; ++i) {
+  //     if (n % i === 0) return false;
+  //   }
+  //   return true;
+  // }
 
   return (
     <IonList>
